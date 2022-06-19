@@ -13,24 +13,24 @@ class SingletonMeta(type):
 
 
 class Password(metaclass=SingletonMeta):
-    def __init__(self, min_patter: int = 1, size: int = 10) -> None:
+    def __init__(self, min_patter: int = 1, length: int = 10) -> None:
         self.all_strings = [
             string.ascii_lowercase,
             string.ascii_uppercase,
             string.digits,
             string.punctuation,
         ]
-        if not self.check_input(min_patter, size):
+        if not self.check_input(min_patter, length):
             # @TODO: improve error message with something more descriptive
             raise Exception("invalid input")
-        self.size = size
+        self.length = length
         self.min_patter = min_patter
 
-    def check_input(self, min_patter: int, size: int) -> bool:
+    def check_input(self, min_patter: int, length: int) -> bool:
         valid = True
         if not isinstance(min_patter, int) or min_patter < 1:
             valid = False
-        elif not isinstance(size, int) or size < min_patter * len(self.all_strings):
+        elif not isinstance(length, int) or length < min_patter * len(self.all_strings):
             valid = False
         return valid
 
@@ -42,9 +42,7 @@ class Password(metaclass=SingletonMeta):
         return mandatory
 
     def get_mandatory(self) -> str:
-
         mandatory = self.get_min_mandatory()
-
         result = ""
         while mandatory:
             index = secrets.choice(range(0, len(mandatory)))
@@ -52,7 +50,8 @@ class Password(metaclass=SingletonMeta):
             mandatory.pop(index)
         return result
 
-    def display(self, phrase: str) -> None:
+    @staticmethod
+    def display(phrase: str) -> None:
         patt = "*"
         empty = " "
         max_length = 150
@@ -76,7 +75,7 @@ class Password(metaclass=SingletonMeta):
         whole_sample += string.digits
         whole_sample += string.punctuation
         mandatory = self.get_mandatory()
-        size_left = self.size - len(mandatory)
-        for _ in range(size_left):
+        length_left = self.length - len(mandatory)
+        for _ in range(length_left):
             mandatory += secrets.choice(seq=whole_sample)
         self.display(mandatory)
