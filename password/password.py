@@ -13,13 +13,18 @@ class SingletonMeta(type):
 
 
 class Password(metaclass=SingletonMeta):
-    def __init__(self, min_patter: int = 1, length: int = 10) -> None:
+    def __init__(
+        self, min_patter: int = 1, length: int = 10, accepted_punctuation: str = ""
+    ) -> None:
         self.all_strings = [
             string.ascii_lowercase,
             string.ascii_uppercase,
             string.digits,
-            string.punctuation,
         ]
+        if accepted_punctuation:
+            self.all_strings.append(accepted_punctuation)
+        else:
+            self.all_strings.append(string.punctuation)
         if not self.check_input(min_patter, length):
             # @TODO: improve error message with something more descriptive
             raise Exception("invalid input")
@@ -70,10 +75,7 @@ class Password(metaclass=SingletonMeta):
         print(f"{patt:*^{max_length}}")
 
     def run(self) -> None:
-        whole_sample = string.ascii_lowercase
-        whole_sample += string.ascii_uppercase
-        whole_sample += string.digits
-        whole_sample += string.punctuation
+        whole_sample = "".join(self.all_strings)
         mandatory = self.get_mandatory()
         length_left = self.length - len(mandatory)
         for _ in range(length_left):

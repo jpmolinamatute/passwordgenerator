@@ -25,8 +25,16 @@ def main() -> int:
         default=2,
         help="minimim number of character per charactr type. Default 2",
     )
+    parser.add_argument(
+        "-p",
+        "--punctuation",
+        type=str,
+        dest="accepted_punctuation",
+        default="",
+        help="valid puntuation. Default '!\"#$&'()*+,-./:;<=>?@[\\]^_`{|}~'%%",
+    )
     raw_args = parser.parse_args()
-    generate = Password(raw_args.min_patter, raw_args.length)
+    generate = Password(raw_args.min_patter, raw_args.length, raw_args.accepted_punctuation)
     generate.run()
     return 0
 
