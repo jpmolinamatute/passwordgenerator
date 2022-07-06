@@ -57,19 +57,20 @@ class Password(metaclass=SingletonMeta):
 
     @staticmethod
     def display(phrase: str) -> None:
+        # https://pbs.twimg.com/media/FQGyvmxXwAIEMfp.png
         patt = "*"
         empty = " "
         max_length = 150
-        margin = (max_length - len(phrase) - 6) / 2
-        empty_length = max_length - 6
+        margin = (max_length - len(phrase) - 8) / 2
+        empty_length = max_length - 8
         print(f"{patt:*^{max_length}}")
         print(f"{patt:*^{max_length}}")
         print(f"{patt:*^{max_length}}")
-        print(f"{patt:*^3}{empty: ^{empty_length}}{patt:*^3}")
-        print(f"{patt:*^3}{empty: ^{empty_length}}{patt:*^3}")
-        print(f"{patt:*^3}{empty: ^{margin}}{phrase}{empty: ^{margin}}{patt:*^3}")
-        print(f"{patt:*^3}{empty: ^{empty_length}}{patt:*^3}")
-        print(f"{patt:*^3}{empty: ^{empty_length}}{patt:*^3}")
+        print(f"{patt:*>4}{empty: >{empty_length}}{patt:*<4}")
+        print(f"{patt:*>4}{empty: >{empty_length}}{patt:*<4}")
+        print(f"{patt:*>4}{empty: >{margin}}{phrase}{empty: <{margin}}{patt:*<4}")
+        print(f"{patt:*>4}{empty: >{empty_length}}{patt:*<4}")
+        print(f"{patt:*>4}{empty: >{empty_length}}{patt:*<4}")
         print(f"{patt:*^{max_length}}")
         print(f"{patt:*^{max_length}}")
         print(f"{patt:*^{max_length}}")
