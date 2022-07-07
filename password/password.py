@@ -1,5 +1,6 @@
 import secrets
 import string
+from os import get_terminal_size
 
 
 class SingletonMeta(type):
@@ -56,21 +57,34 @@ class Password(metaclass=SingletonMeta):
         return result
 
     @staticmethod
-    def display(phrase: str) -> None:
+    def display(phrase: str, max_length: int = 150) -> None:
         # https://pbs.twimg.com/media/FQGyvmxXwAIEMfp.png
         patt = "*"
         empty = " "
-        max_length = 150
-        margin = (max_length - len(phrase) - 8) / 2
-        empty_length = max_length - 8
+        side_column = 4
+        both_side_columns = side_column * 2
+        empty_length = max_length - both_side_columns
+
+        if int((empty_length - len(phrase)) / 2) > 0:
+            margin = int((empty_length - len(phrase)) / 2)
+            main_part = f"{patt:*>{side_column}}{empty: >{margin}}"
+            main_part += phrase
+            main_part += f"{empty: <{margin}}{patt:*<{side_column}}"
+        elif int((max_length - len(phrase)) / 2) > 0:
+            margin = int((max_length - len(phrase)) / 2)
+            main_part = f"{empty: >{margin}}"
+            main_part += phrase
+            main_part += f"{empty: <{margin}}"
+        else:
+            main_part = phrase
         print(f"{patt:*^{max_length}}")
         print(f"{patt:*^{max_length}}")
         print(f"{patt:*^{max_length}}")
-        print(f"{patt:*>4}{empty: >{empty_length}}{patt:*<4}")
-        print(f"{patt:*>4}{empty: >{empty_length}}{patt:*<4}")
-        print(f"{patt:*>4}{empty: >{margin}}{phrase}{empty: <{margin}}{patt:*<4}")
-        print(f"{patt:*>4}{empty: >{empty_length}}{patt:*<4}")
-        print(f"{patt:*>4}{empty: >{empty_length}}{patt:*<4}")
+        print(f"{patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}")
+        print(f"{patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}")
+        print(main_part)
+        print(f"{patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}")
+        print(f"{patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}")
         print(f"{patt:*^{max_length}}")
         print(f"{patt:*^{max_length}}")
         print(f"{patt:*^{max_length}}")
@@ -81,4 +95,8 @@ class Password(metaclass=SingletonMeta):
         length_left = self.length - len(mandatory)
         for _ in range(length_left):
             mandatory += secrets.choice(seq=whole_sample)
-        self.display(mandatory)
+        columns = get_terminal_size().columns
+        if self.length <= columns:
+            self.display(mandatory, columns)
+        else:
+            raise Exception("ERROR: Password won't fix screen")

@@ -31,7 +31,7 @@ def main() -> int:
         type=str,
         dest="accepted_punctuation",
         default="",
-        help="valid puntuation. Default '!\"#$&'()*+,-./:;<=>?@[\\]^_`{|}~'%%",
+        help="valid puntuation. Default !\"#$&'()*+,-./:;<=>?@[\\]^_`{|}~%%",
     )
     raw_args = parser.parse_args()
     generate = Password(raw_args.min_patter, raw_args.length, raw_args.accepted_punctuation)
