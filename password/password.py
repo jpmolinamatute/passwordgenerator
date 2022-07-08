@@ -1,10 +1,13 @@
 import secrets
 import string
 from os import get_terminal_size
+from typing import ClassVar
+
+from .passwordexception import PasswordException
 
 
 class SingletonMeta(type):
-    _instances = {}
+    _instances: ClassVar[dict] = {}
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
@@ -26,19 +29,20 @@ class Password(metaclass=SingletonMeta):
             self.all_strings.append(accepted_punctuation)
         else:
             self.all_strings.append(string.punctuation)
-        if not self.check_input(min_patter, length):
-            # @TODO: improve error message with something more descriptive
-            raise Exception("invalid input")
+        self.columns = get_terminal_size().columns
+        self.check_input(min_patter, length)
         self.length = length
         self.min_patter = min_patter
 
-    def check_input(self, min_patter: int, length: int) -> bool:
-        valid = True
+    def check_input(self, min_patter: int, length: int) -> None:
         if not isinstance(min_patter, int) or min_patter < 1:
-            valid = False
-        elif not isinstance(length, int) or length < min_patter * len(self.all_strings):
-            valid = False
-        return valid
+            raise PasswordException("minimum patter must be an integer and positive")
+        if not isinstance(length, int) or length < (min_patter * len(self.all_strings)):
+            msg = "length must be an integer and greater than "
+            msg += str(min_patter * len(self.all_strings))
+            raise PasswordException(msg)
+        if length > self.columns:
+            raise PasswordException("Password won't fix screen")
 
     def get_min_mandatory(self) -> list[str]:
         mandatory: list[str] = []
@@ -95,8 +99,5 @@ class Password(metaclass=SingletonMeta):
         length_left = self.length - len(mandatory)
         for _ in range(length_left):
             mandatory += secrets.choice(seq=whole_sample)
-        columns = get_terminal_size().columns
-        if self.length <= columns:
-            self.display(mandatory, columns)
-        else:
-            raise Exception("ERROR: Password won't fix screen")
+
+        self.display(mandatory, self.columns)

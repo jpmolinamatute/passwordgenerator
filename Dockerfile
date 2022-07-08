@@ -4,8 +4,8 @@ ARG SECRET_USER="secret"
 ARG SECRET_HOME="/opt/${SECRET_USER}"
 
 ENV LENGTH="20"
-ENV MIN_PATTER="2"
-
+ENV MIN_PATTER="1"
+ENV SPECIAL_CHAR="!\"#$&'()*+,-./:;<=>?@[\\]^_`{|}~%"
 RUN apk update\
     && apk upgrade\
     && pip install --upgrade pip\
@@ -18,4 +18,4 @@ RUN cd ${SECRET_HOME}\
 
 USER ${SECRET_USER}
 WORKDIR ${SECRET_HOME}
-ENTRYPOINT ./run.py -l "${LENGTH}" -m "${MIN_PATTER}"
+ENTRYPOINT ./run.py -l "${LENGTH}" -m "${MIN_PATTER}" -p "${SPECIAL_CHAR}"

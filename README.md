@@ -24,7 +24,7 @@ special character are being used.
 
     ```sh
     docker build --rm -t secrets:latest .
-    docker run --rm -it --name secrets-container secrets:latest
+    docker run --rm -t --name secrets-container secrets:latest
     ```
 
 ## How to run this app with custom parameters ##
@@ -36,5 +36,5 @@ special character are being used.
 ./run.py ./run.py -l 30 -p *+-:;<=>?
 
 # Using docker
-docker run --rm --name secrets-container -it -e LENGTH=30 -e MIN_PATTER=2 -e  SPECIAL_CHAR="*+-:;<=>?" secrets:latest
+docker run --rm --name secrets-container -t -e LENGTH=30 -e MIN_PATTER=2 -e  SPECIAL_CHAR="*+-:;<=>?" secrets:latest
 ```
