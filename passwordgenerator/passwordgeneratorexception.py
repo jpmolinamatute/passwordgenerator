@@ -1,4 +1,4 @@
-class PasswordException(Exception):
+class PasswordGeneratorException(Exception):
     def __init__(self, *args: object) -> None:
         self.message = args[0] if args else ""
         super().__init__(*args)

@@ -1,0 +1,16 @@
+[build.system]
+requires = []
+build.backend =
+
+[project]
+name = "passwordgenerator"
+version = "1.0.0"
+description "Generate a random password in a simple and secure way"
+readme = "README.md"
+authors = [{ name = "Juan P. Molina M.", email = "jpmolinamatute@gmail.com" }]
+license = {file = "LICENSE"}
+classifiers = [
+
+]
+[project.scripts]
+passwordgenerator = "passwordgenerator.__main__:main"

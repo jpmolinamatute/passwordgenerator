@@ -5,7 +5,7 @@ import sys
 from os import path
 import argparse
 
-from password import Password
+from passwordgenerator import PasswordGenerator
 
 
 def main() -> int:
@@ -34,8 +34,12 @@ def main() -> int:
         help="valid puntuation. Default !\"#$&'()*+,-./:;<=>?@[\\]^_`{|}~%%",
     )
     raw_args = parser.parse_args()
-    generate = Password(raw_args.min_patter, raw_args.length, raw_args.accepted_punctuation)
-    generate.run()
+    generate = PasswordGenerator(
+        raw_args.min_patter,
+        raw_args.length,
+        raw_args.accepted_punctuation,
+    )
+    generate.display()
     return 0
 
 

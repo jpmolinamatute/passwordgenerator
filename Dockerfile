@@ -11,7 +11,7 @@ RUN apk update\
     && pip install --upgrade pip\
     && pip install pipenv\
     && adduser -h "${SECRET_HOME}" -S -G nogroup "${SECRET_USER}"
-COPY --chown=${SECRET_USER}:nogroup ./Pipfile ./Pipfile.lock ./password/ ./run.py ${SECRET_HOME}/
+COPY --chown=${SECRET_USER}:nogroup ./Pipfile ./Pipfile.lock ./passwordgenerator/ ./run.py ${SECRET_HOME}/
 
 RUN cd ${SECRET_HOME}\
     && pipenv install --system --deploy
