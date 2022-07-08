@@ -10,6 +10,7 @@ mypy = "*"
 pylint = "*"
 black = "*"
 ptpython = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.10"

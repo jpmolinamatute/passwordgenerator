@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "passwordgenerator"
 version = "1.0.0"
-description "Generate a random password in a simple and secure way"
+description = "Generate a random password in a simple and secure way"
 readme = "README.md"
 authors = [{ name = "Juan P. Molina M.", email = "jpmolinamatute@gmail.com" }]
 license = {file = "LICENSE"}

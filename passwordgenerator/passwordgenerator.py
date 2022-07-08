@@ -1,7 +1,7 @@
+import re
 import secrets
 import string
-from os import get_terminal_size
-import re
+from shutil import get_terminal_size
 from typing import ClassVar
 
 from .passwordgeneratorexception import PasswordGeneratorException
@@ -92,28 +92,28 @@ class PasswordGenerator(metaclass=SingletonMeta):
             password += secrets.choice(seq=whole_sample)
         return password
 
-    def has_min_lowercase(self, password:str) -> bool:
+    def has_min_lowercase(self, password: str) -> bool:
         """
         validate password has minimun amount of lower case characters
         """
         count = sum(int(c.islower()) for c in password)
         return count >= self.min_patter
 
-    def has_min_uppercase(self, password:str) -> bool:
+    def has_min_uppercase(self, password: str) -> bool:
         """
         validate password has minimun amount of upper case characters
         """
         count = sum(int(c.isupper()) for c in password)
         return count >= self.min_patter
 
-    def has_min_digits(self, password:str) -> bool:
+    def has_min_digits(self, password: str) -> bool:
         """
         validate password has minimun amount of digits
         """
         count = sum(int(c.isdigit()) for c in password)
         return count >= self.min_patter
 
-    def has_min_esp_char(self, password:str) -> bool:
+    def has_min_esp_char(self, password: str) -> bool:
         """
         validate password has minimun amount of espcial characters
         """
@@ -122,7 +122,7 @@ class PasswordGenerator(metaclass=SingletonMeta):
         count = sum(int(c.isprintable()) for c in min_esp_char)
         return count >= self.min_patter
 
-    def validate_password(self, password:str) -> bool:
+    def validate_password(self, password: str) -> bool:
         """
         validate password contains min_patter
         """
