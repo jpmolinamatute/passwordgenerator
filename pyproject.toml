@@ -1,6 +1,6 @@
-[build.system]
-requires = []
-build.backend =
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "passwordgenerator"
@@ -10,7 +10,19 @@ readme = "README.md"
 authors = [{ name = "Juan P. Molina M.", email = "jpmolinamatute@gmail.com" }]
 license = {file = "LICENSE"}
 classifiers = [
-
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
 ]
+keywords = ["password", "secured", "random"]
+dependencies = []
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = ["black", "pylint", "mypy", "pytest"]
+
+[project.urls]
+Homepage = "https://github.com/jpmolinamatute/passwordgenerator"
+
 [project.scripts]
 passwordgenerator = "passwordgenerator.__main__:main"
