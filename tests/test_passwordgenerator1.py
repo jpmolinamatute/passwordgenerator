@@ -5,7 +5,7 @@ from passwordgenerator import PasswordGenerator
 VALID_PASSWORD = ")lp]X&|}5/J~&M}-2=8W"
 
 
-@pytest.fixture(name="password", scope="session")
+@pytest.fixture(name="password", scope="module")
 def fixture_password() -> PasswordGenerator:
     return PasswordGenerator(min_patter=2, length=20)
 
@@ -68,3 +68,7 @@ def test_validate_password_invalid(password) -> None:
 def test_password_length(password) -> None:
     password = password.get()
     assert len(password) == 20
+
+
+def test_delete(password) -> None:
+    password.destroy()

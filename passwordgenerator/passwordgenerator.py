@@ -8,13 +8,16 @@ from .passwordgeneratorexception import PasswordGeneratorException
 
 
 class SingletonMeta(type):
-    _instances: ClassVar[dict] = {}
-
+    # _instances: ClassVar[dict] = {}
+    _instance = None
+    # def __call__(cls, *args, **kwargs):
+    #     if cls not in cls._instances:
+    #         cls._instances[cls] = super().__call__(*args, **kwargs)
+    #     return cls._instances[cls]
     def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            instance = super().__call__(*args, **kwargs)
-            cls._instances[cls] = instance
-        return cls._instances[cls]
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+        return cls._instance
 
 
 class PasswordGenerator(metaclass=SingletonMeta):
@@ -138,3 +141,7 @@ class PasswordGenerator(metaclass=SingletonMeta):
         while not self.validate_password(password):
             password = self.generate()
         return password
+
+    @classmethod
+    def destroy(cls) -> None:
+        del cls

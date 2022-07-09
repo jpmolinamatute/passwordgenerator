@@ -2,8 +2,9 @@ from .passwordgenerator import PasswordGenerator
 
 
 def main() -> None:
-    generate = PasswordGenerator()
-    generate.display()
+    password = PasswordGenerator()
+    password.display()
+    password.destroy()
 
 
 if __name__ == "__main__":
