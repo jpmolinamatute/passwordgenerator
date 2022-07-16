@@ -8,29 +8,30 @@ from .passwordgeneratorexception import PasswordGeneratorException
 
 
 class SingletonMeta(type):
-    # _instances: ClassVar[dict] = {}
-    _instance = None
-    # def __call__(cls, *args, **kwargs):
-    #     if cls not in cls._instances:
-    #         cls._instances[cls] = super().__call__(*args, **kwargs)
-    #     return cls._instances[cls]
+    _instance: ClassVar = None
+
     def __call__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__call__(*args, **kwargs)
         return cls._instance
 
+    # def __del__(cls) -> None:
+    # @IMPORTANT: is this working?
+    # cls._instance = None
+    # del cls._instance
+
 
 class PasswordGenerator(metaclass=SingletonMeta):
     def __init__(self, min_patter: int = 1, length: int = 15, punctuation: str = "") -> None:
-        self.all_strings = [
-            string.ascii_lowercase,
-            string.ascii_uppercase,
-            string.digits,
-        ]
+        self.all_strings = string.ascii_lowercase
+        self.all_strings += string.ascii_uppercase
+        self.all_strings += string.digits
+
         if punctuation:
-            self.all_strings.append(punctuation)
+            self.all_strings += punctuation
         else:
-            self.all_strings.append(string.punctuation)
+            self.all_strings += string.punctuation
+        self.possible_pattern_type = 4
         self.columns = get_terminal_size().columns
         self.check_input(min_patter, length)
         self.length = length
@@ -42,9 +43,9 @@ class PasswordGenerator(metaclass=SingletonMeta):
         """
         if not isinstance(min_patter, int) or min_patter < 1:
             raise PasswordGeneratorException("minimum patter must be an integer and positive")
-        if not isinstance(length, int) or length < (min_patter * len(self.all_strings)):
+        if not isinstance(length, int) or length < (min_patter * self.possible_pattern_type):
             msg = "length must be an integer and greater than "
-            msg += str(min_patter * len(self.all_strings))
+            msg += str(min_patter * self.possible_pattern_type)
             raise PasswordGeneratorException(msg)
         if length > self.columns:
             raise PasswordGeneratorException("Password won't fix screen")
@@ -89,10 +90,9 @@ class PasswordGenerator(metaclass=SingletonMeta):
         """
         generate a random password from self.all_strings characters
         """
-        whole_sample = "".join(self.all_strings)
         password = ""
         for _ in range(self.length):
-            password += secrets.choice(seq=whole_sample)
+            password += secrets.choice(seq=self.all_strings)
         return password
 
     def has_min_lowercase(self, password: str) -> bool:

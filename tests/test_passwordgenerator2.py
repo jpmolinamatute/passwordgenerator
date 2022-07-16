@@ -1,6 +1,6 @@
 import pytest
 
-from passwordgenerator import PasswordGenerator, PasswordGeneratorException
+from password import PasswordGenerator, PasswordGeneratorException
 
 
 def test_raises_exception_when_length_0():

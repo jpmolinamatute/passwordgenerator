@@ -5,7 +5,7 @@ import sys
 from os import path
 import argparse
 
-from passwordgenerator import PasswordGenerator
+from password import PasswordGenerator
 
 
 def main() -> int:
