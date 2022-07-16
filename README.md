@@ -38,3 +38,42 @@ special character are being used.
 # Using docker
 docker run --rm --name secrets-container -t -e LENGTH=30 -e MIN_PATTER=2 -e  SPECIAL_CHAR="*+-:;<=>?" secrets:latest
 ```
+
+## Future plans ##
+
+<!-- REFERENCE: https://mermaid-js.github.io/mermaid/#/ -->
+The idea is to make a webapp hosted in AWS that allows multiple users. We would use OAuth2 with google/twitter/github
+for authentication.
+
+once the user is logged in it will see a search field. They will use this search field to find the credentials they are looking for. They can use either *name* or *url*. Then the app will show some imformation and other will be redacted,
+however, they click on copy button (to copy the information to memory). No sensitive information (user/password) will be shown at any point.
+
+```mermaid
+erDiagram
+    SESSION }o--|| ACCOUNT-SESSION : belong
+    SESSION {
+        string id PK
+        string account FK
+        string token1
+        string token2
+        date expired
+    }
+    ACCOUNT ||--o{ ACCOUNT-PASSWORD : has
+    ACCOUNT ||--o{ ACCOUNT-SESSION : in
+    ACCOUNT {
+        string id PK
+        string name
+        string email
+        string provider
+    }
+    PASSWORD }o--|| ACCOUNT-PASSWORD : belong
+    PASSWORD {
+        string id PK
+        date utc_date
+        string name
+        string url
+        string account FK
+        byte password
+    }
+    
+```

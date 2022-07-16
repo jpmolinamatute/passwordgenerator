@@ -4,6 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+sqlalchemy = "*"
+cryptography = "*"
+psycopg2 = "*"
 
 [dev-packages]
 mypy = "*"
@@ -11,6 +14,8 @@ pylint = "*"
 black = "*"
 ptpython = "*"
 pytest = "*"
+sqlalchemy2-stubs = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.10"
