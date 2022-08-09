@@ -44,6 +44,16 @@ class PasswordGenerator(metaclass=SingletonMeta):
         random.shuffle(tmp_list)
         return "".join(tmp_list)
 
+    @property
+    def password(self) -> str:
+        """
+        get a valid password
+        """
+        password = ""
+        while not self.validate_password(password):
+            password = self.generate()
+        return password
+
     def check_input(self, min_patter: int, length: int) -> None:
         """
         make sure all parameters passed are valid and usable
@@ -65,7 +75,7 @@ class PasswordGenerator(metaclass=SingletonMeta):
         patt = "*"
         empty = " "
         side_column = 4
-        phrase = self.get()
+        phrase = self.password
         both_side_columns = side_column * 2
         empty_length = self.columns - both_side_columns
 
@@ -143,15 +153,6 @@ class PasswordGenerator(metaclass=SingletonMeta):
         condition1 = self.has_min_digits(password) and self.has_min_esp_char(password)
         condition2 = self.has_min_lowercase(password) and self.has_min_uppercase(password)
         return condition1 and condition2
-
-    def get(self) -> str:
-        """
-        get a valid password
-        """
-        password = ""
-        while not self.validate_password(password):
-            password = self.generate()
-        return password
 
     @classmethod
     def destroy(cls) -> None:
