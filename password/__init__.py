@@ -1,0 +1,1 @@
+from .passwordgenerator import PasswordGenerator
