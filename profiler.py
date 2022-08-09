@@ -5,7 +5,7 @@ import sys
 from os import path
 import cProfile
 import pstats
-from passwordgenerator import PasswordGenerator
+from password import PasswordGenerator
 
 
 def main() -> int:

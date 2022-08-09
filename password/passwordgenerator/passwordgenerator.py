@@ -1,9 +1,10 @@
 import re
 import secrets
 import string
+import random
 from shutil import get_terminal_size
 from typing import ClassVar
-
+import inspect
 from .passwordgeneratorexception import PasswordGeneratorException
 
 
@@ -23,19 +24,25 @@ class SingletonMeta(type):
 
 class PasswordGenerator(metaclass=SingletonMeta):
     def __init__(self, min_patter: int = 1, length: int = 15, punctuation: str = "") -> None:
-        self.all_strings = string.ascii_lowercase
-        self.all_strings += string.ascii_uppercase
-        self.all_strings += string.digits
-
-        if punctuation:
-            self.all_strings += punctuation
-        else:
-            self.all_strings += string.punctuation
+        self.punctuation = punctuation
         self.possible_pattern_type = 4
         self.columns = get_terminal_size().columns
         self.check_input(min_patter, length)
         self.length = length
         self.min_patter = min_patter
+
+    @property
+    def all_strings(self) -> str:
+        raw_all_ascii = f"{string.ascii_lowercase}{string.ascii_uppercase}{string.digits}"
+
+        if self.punctuation:
+            raw_all_ascii += self.punctuation
+        else:
+            raw_all_ascii += string.punctuation
+        tmp_list = list(raw_all_ascii)
+        random.shuffle(tmp_list)
+        random.shuffle(tmp_list)
+        return "".join(tmp_list)
 
     def check_input(self, min_patter: int, length: int) -> None:
         """
@@ -74,17 +81,21 @@ class PasswordGenerator(metaclass=SingletonMeta):
             main_part += f"{empty: <{margin}}"
         else:
             main_part = phrase
-        print(f"{patt:*^{self.columns}}")
-        print(f"{patt:*^{self.columns}}")
-        print(f"{patt:*^{self.columns}}")
-        print(f"{patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}")
-        print(f"{patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}")
-        print(main_part)
-        print(f"{patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}")
-        print(f"{patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}")
-        print(f"{patt:*^{self.columns}}")
-        print(f"{patt:*^{self.columns}}")
-        print(f"{patt:*^{self.columns}}")
+
+        output = f"""
+            {patt:*^{self.columns}}
+            {patt:*^{self.columns}}
+            {patt:*^{self.columns}}
+            {patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}
+            {patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}
+            {main_part}
+            {patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}
+            {patt:*>{side_column}}{empty: >{empty_length}}{patt:*<{side_column}}
+            {patt:*^{self.columns}}
+            {patt:*^{self.columns}}
+            {patt:*^{self.columns}}
+        """
+        print(inspect.cleandoc(output))
 
     def generate(self) -> str:
         """

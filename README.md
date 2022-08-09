@@ -49,6 +49,64 @@ once the user is logged in it will see a search field. They will use this search
 however, they click on copy button (to copy the information to memory). No sensitive information (user/password) will be shown at any point.
 
 ```mermaid
+flowchart TB
+    start([User visit page/load app])
+    login{Is user logged in?}
+    login_display[Display logging screen]
+    login_process[Redirect user to OAuth provider]
+    display_main_screen[Display main screen]
+    what_to_do{What does the user want to do?}
+    user_search[/User search for cred using name or url/]
+    cred_found{Is credentials found?}
+    display_cred[Display credential]
+    cred_not_found[Display error message]
+    cred_not_valid[Display error message]
+    display_password_form[Display new credential form]
+    display_search_form[Display search credential form]
+    display_password_again1{Is new credential valid?}
+    display_password_again2{does credential alreary exist?}
+    user_add_cred[/User add new credentials/]
+    actions{now what?}
+    copy[Either password or user is copied to memory]
+    delete[Credentials are deleted]
+    update[Credentials are updated]
+    save[New credential is saved]
+    want_close{Does the user want to continue?}
+
+    start-->login
+    login -->|Yes| display_main_screen
+    login -->|No| login_display
+    login_display --> login_process
+    login_process --> display_main_screen
+    display_main_screen --> what_to_do
+    what_to_do -->|Search| display_search_form
+    what_to_do -->|Add| display_password_form
+    display_password_form --> user_add_cred
+    display_search_form --> user_search
+    user_add_cred -->display_password_again1
+    display_password_again1 -->|Yes| display_password_again2
+    display_password_again1 -->|No| cred_not_valid
+    display_password_again2 -->|Yes| save
+    display_password_again2 -->|No| cred_not_valid
+    cred_not_valid --> user_add_cred
+    user_search --> cred_found
+    cred_found -->|Yes| display_cred
+    cred_found -->|No| cred_not_found
+    cred_not_found --> display_search_form
+    display_cred --> actions
+    actions --> copy
+    actions --> delete
+    actions --> update
+    delete --> display_main_screen
+    update --> display_main_screen
+    copy --> want_close
+    want_close -->|yes| actions
+    want_close -->|No| display_main_screen
+```
+
+<!-- https://sparxsystems.com/resources/tutorials/uml/datamodel.html -->
+
+```mermaid
 erDiagram
     SESSION }o--|| ACCOUNT-SESSION : belong
     SESSION {
@@ -75,5 +133,4 @@ erDiagram
         string account FK
         byte password
     }
-    
 ```
