@@ -24,19 +24,17 @@ class SingletonMeta(type):
 
 class PasswordGenerator(metaclass=SingletonMeta):
     def __init__(self, min_patter: int = 1, length: int = 15, punctuation: str = "") -> None:
-        self.punctuation = punctuation
         self.possible_pattern_type = 4
         self.columns = get_terminal_size().columns
         self.check_input(min_patter, length)
         self.length = length
         self.min_patter = min_patter
+        self.all_strings = self.get_all_strings(punctuation)
 
-    @property
-    def all_strings(self) -> str:
+    def get_all_strings(self, punctuation: str) -> str:
         raw_all_ascii = f"{string.ascii_lowercase}{string.ascii_uppercase}{string.digits}"
-
-        if self.punctuation:
-            raw_all_ascii += self.punctuation
+        if punctuation:
+            raw_all_ascii += punctuation
         else:
             raw_all_ascii += string.punctuation
         tmp_list = list(raw_all_ascii)
