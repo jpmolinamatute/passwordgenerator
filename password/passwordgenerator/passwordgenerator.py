@@ -24,12 +24,33 @@ class SingletonMeta(type):
 
 class PasswordGenerator(metaclass=SingletonMeta):
     def __init__(self, min_patter: int = 1, length: int = 15, punctuation: str = "") -> None:
-        self.punctuation = punctuation
         self.possible_pattern_type = 4
         self.columns = get_terminal_size().columns
         self.check_input(min_patter, length)
         self.length = length
         self.min_patter = min_patter
+        self.all_strings = self.get_all_strings(punctuation)
+
+    def get_all_strings(self, punctuation: str) -> str:
+        raw_all_ascii = f"{string.ascii_lowercase}{string.ascii_uppercase}{string.digits}"
+        if punctuation:
+            raw_all_ascii += punctuation
+        else:
+            raw_all_ascii += string.punctuation
+        tmp_list = list(raw_all_ascii)
+        random.shuffle(tmp_list)
+        random.shuffle(tmp_list)
+        return "".join(tmp_list)
+
+    @property
+    def password(self) -> str:
+        """
+        get a valid password
+        """
+        password = ""
+        while not self.validate_password(password):
+            password = self.generate()
+        return password
 
     @property
     def all_strings(self) -> str:
@@ -65,7 +86,7 @@ class PasswordGenerator(metaclass=SingletonMeta):
         patt = "*"
         empty = " "
         side_column = 4
-        phrase = self.get()
+        phrase = self.password
         both_side_columns = side_column * 2
         empty_length = self.columns - both_side_columns
 
@@ -143,15 +164,6 @@ class PasswordGenerator(metaclass=SingletonMeta):
         condition1 = self.has_min_digits(password) and self.has_min_esp_char(password)
         condition2 = self.has_min_lowercase(password) and self.has_min_uppercase(password)
         return condition1 and condition2
-
-    def get(self) -> str:
-        """
-        get a valid password
-        """
-        password = ""
-        while not self.validate_password(password):
-            password = self.generate()
-        return password
 
     @classmethod
     def destroy(cls) -> None:
