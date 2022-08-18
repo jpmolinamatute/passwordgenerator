@@ -22,7 +22,7 @@ init-hook="import sys; sys.path.append('passwordgenerator')"
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use.
-jobs=0
+jobs=8
 
 # Control the amount of potential inferred values when inferring a single
 # object. This can help the performance when dealing with large functions or

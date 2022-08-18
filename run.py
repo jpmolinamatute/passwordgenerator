@@ -40,7 +40,6 @@ def main() -> int:
         raw_args.accepted_punctuation,
     )
     generate.display()
-    generate.destroy()
     return 0
 
 
