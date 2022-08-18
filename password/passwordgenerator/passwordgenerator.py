@@ -3,7 +3,6 @@ import random
 import re
 import secrets
 import string
-import timeit
 from shutil import get_terminal_size
 from typing import ClassVar
 
@@ -32,7 +31,9 @@ class PasswordGenerator(metaclass=SingletonMeta):
     - Length of `length`
     """
 
-    def __init__(self, min_pattern: int = 1, length: int = 15, punctuation: str = "") -> None:
+    def __init__(
+        self, min_pattern: int = 1, length: int = 15, punctuation: str = ""
+    ) -> None:
         self.possible_pattern_type = 4
         self.columns = get_terminal_size().columns
         self.check_input(min_pattern, length)
@@ -44,7 +45,9 @@ class PasswordGenerator(metaclass=SingletonMeta):
         """
         Return all possible characters to use in password
         """
-        raw_all_ascii = f"{string.ascii_lowercase}{string.ascii_uppercase}{string.digits}"
+        raw_all_ascii = (
+            f"{string.ascii_lowercase}{string.ascii_uppercase}{string.digits}"
+        )
         if self.punctuation:
             raw_all_ascii += self.punctuation
         else:
@@ -70,8 +73,12 @@ class PasswordGenerator(metaclass=SingletonMeta):
         make sure all parameters passed are valid and usable
         """
         if not isinstance(min_pattern, int) or min_pattern < 1:
-            raise PasswordGeneratorException("minimum patter must be an integer and positive")
-        if not isinstance(length, int) or length < (min_pattern * self.possible_pattern_type):
+            raise PasswordGeneratorException(
+                "minimum patter must be an integer and positive"
+            )
+        if not isinstance(length, int) or length < (
+            min_pattern * self.possible_pattern_type
+        ):
             msg = "length must be an integer and greater than "
             msg += str(min_pattern * self.possible_pattern_type)
             raise PasswordGeneratorException(msg)
@@ -170,5 +177,7 @@ class PasswordGenerator(metaclass=SingletonMeta):
         """
 
         condition1 = self.has_min_digits(password) and self.has_min_esp_char(password)
-        condition2 = self.has_min_lowercase(password) and self.has_min_uppercase(password)
+        condition2 = self.has_min_lowercase(password) and self.has_min_uppercase(
+            password
+        )
         return condition1 and condition2
