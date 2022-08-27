@@ -6,6 +6,8 @@ import string
 from shutil import get_terminal_size
 from typing import ClassVar
 
+import pyperclip as pc
+
 from .passwordgeneratorexception import PasswordGeneratorException
 
 
@@ -18,7 +20,8 @@ class SingletonMeta(type):
         return cls._instance
 
     def __del__(cls) -> None:
-        del cls._instance
+        if cls._instance:
+            del cls._instance
 
 
 class PasswordGenerator(metaclass=SingletonMeta):
@@ -31,32 +34,55 @@ class PasswordGenerator(metaclass=SingletonMeta):
     - Length of `length`
     """
 
-    def __init__(
-        self, min_pattern: int = 1, length: int = 15, punctuation: str = ""
-    ) -> None:
+    def __init__(self, min_pattern: int = 1, length: int = 15, special: str = "") -> None:
         self.possible_pattern_type = 4
         self.columns = get_terminal_size().columns
-        self.check_input(min_pattern, length)
-        self.punctuation = punctuation
-        self.length = length
+        self.special = special
         self.min_pattern = min_pattern
+        self.length = length
+
+    @property
+    def min_pattern(self) -> int:
+        return self.__min_pattern
+
+    @min_pattern.setter
+    def min_pattern(self, pattern: int) -> None:
+        if isinstance(pattern, int) and pattern >= 1:
+            self.__min_pattern = pattern
+        else:
+            raise PasswordGeneratorException("minimum patter must be an integer and positive")
+
+    @property
+    def length(self) -> int:
+        return self.__length
+
+    @length.setter
+    def length(self, width: int) -> None:
+        max_length = self.min_pattern * self.possible_pattern_type
+        if isinstance(width, int) and self.columns > width > max_length:
+            self.__length = width
+        elif width > self.columns:
+            raise PasswordGeneratorException("Password won't fix screen")
+        else:
+            msg = "length must be an integer and greater than "
+            msg += f"{max_length} but less than {self.columns}"
+            raise PasswordGeneratorException(msg)
 
     def all_characters(self) -> str:
         """
         Return all possible characters to use in password
         """
-        raw_all_ascii = (
-            f"{string.ascii_lowercase}{string.ascii_uppercase}{string.digits}"
-        )
-        if self.punctuation:
-            raw_all_ascii += self.punctuation
+
+        raw_all_ascii = f"{string.ascii_lowercase}{string.ascii_uppercase}{string.digits}"
+        if self.special:
+            raw_all_ascii += self.special
         else:
             raw_all_ascii += string.punctuation
 
-        result = "".join(random.sample(raw_all_ascii, self.length))
-        return "".join(random.sample(result, self.length))
+        ascii_length = len(raw_all_ascii)
+        raw_all_ascii = "".join(random.sample(raw_all_ascii, ascii_length))
+        return "".join(random.sample(raw_all_ascii, ascii_length))
 
-    @property
     def password(self) -> str:
         """
         get a valid password
@@ -68,23 +94,6 @@ class PasswordGenerator(metaclass=SingletonMeta):
 
         return password
 
-    def check_input(self, min_pattern: int, length: int) -> None:
-        """
-        make sure all parameters passed are valid and usable
-        """
-        if not isinstance(min_pattern, int) or min_pattern < 1:
-            raise PasswordGeneratorException(
-                "minimum patter must be an integer and positive"
-            )
-        if not isinstance(length, int) or length < (
-            min_pattern * self.possible_pattern_type
-        ):
-            msg = "length must be an integer and greater than "
-            msg += str(min_pattern * self.possible_pattern_type)
-            raise PasswordGeneratorException(msg)
-        if length > self.columns:
-            raise PasswordGeneratorException("Password won't fix screen")
-
     def display(self) -> None:
         """
         display password to user in a easy & pretty way to ready
@@ -94,7 +103,7 @@ class PasswordGenerator(metaclass=SingletonMeta):
         patt = "*"
         empty = " "
         side_column = 4
-        phrase = self.password
+        phrase = self.password()
         both_side_columns = side_column * 2
         empty_length = self.columns - both_side_columns
 
@@ -124,7 +133,10 @@ class PasswordGenerator(metaclass=SingletonMeta):
             {patt:*^{self.columns}}
             {patt:*^{self.columns}}
         """
+        print("")
         print(inspect.cleandoc(output))
+        print("")
+        pc.copy(phrase)
 
     def generate(self) -> str:
         """
@@ -161,7 +173,7 @@ class PasswordGenerator(metaclass=SingletonMeta):
         count = sum(int(c.isdigit()) for c in password)
         return count >= self.min_pattern
 
-    def has_min_esp_char(self, password: str) -> bool:
+    def has_min_spe_char(self, password: str) -> bool:
         """
         validate password has minimun amount of espcial characters
         """
@@ -176,8 +188,9 @@ class PasswordGenerator(metaclass=SingletonMeta):
         validate password contains min_pattern
         """
 
-        condition1 = self.has_min_digits(password) and self.has_min_esp_char(password)
-        condition2 = self.has_min_lowercase(password) and self.has_min_uppercase(
-            password
+        return (
+            self.has_min_digits(password)
+            and self.has_min_spe_char(password)
+            and self.has_min_lowercase(password)
+            and self.has_min_uppercase(password)
         )
-        return condition1 and condition2

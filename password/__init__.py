@@ -1,1 +1,1 @@
-from .passwordgenerator import PasswordGenerator
+from .passwordgenerator import PasswordGenerator, PasswordGeneratorException

@@ -10,7 +10,7 @@ from password import PasswordGenerator
 
 def main() -> int:
     with cProfile.Profile() as profile_output:
-        generate = PasswordGenerator(5, 20)
+        generate = PasswordGenerator(2, 20)
         generate.display()
     stats = pstats.Stats(profile_output)
     stats.sort_stats(pstats.SortKey.TIME)
